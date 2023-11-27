@@ -6,7 +6,7 @@ const admins = require("../model/Admin");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 
-const { validaId, validaPost, isAdmin, usuarioOuAdmin} = require("../helpers/middleware");
+const {validaNome, validaId, validaPost, isAdmin, usuarioOuAdmin} = require("../helpers/middleware");
 
 //configuração do dotenv
 dotenv.config();
@@ -16,7 +16,7 @@ const ADMIN = process.env.ADMIN_USER;
 
 //Rota principal    
 router.get("/", (req, res) => {
-    res.json({ msg: "Rota para acesso" });
+    res.json({ msg: "Bem vindo a rota de acesso" });
 });
 
 //rota para o registro
@@ -52,7 +52,7 @@ router.post("/login", async(req, res)=>{
             user = await usuarios.buscar(nome);
         }
         if(user.senha === senha){
-            const token = jwt.sign({id: user._id}, process.env.SECRET, {expiresIn: 300});
+            const token = jwt.sign({id: user._id}, process.env.SECRET, {expiresIn: 3000});
             res.status(200).json({msg: "Login realizado com sucesso", token: token});
         }else{
             res.status(400).json({msg: "Senha incorreta"});
@@ -78,10 +78,10 @@ router.post("/admin/:id", validaPost, isAdmin, async(req, res) => {
 });
 
 //Rota exclusão usuario por admin
-router.delete("/excluir/:id", validaId, isAdmin, async(req, res) => {
-    const id = req.params.id;
+router.delete("/excluir/:nome", validaNome, usuarioOuAdmin, async(req, res) => {
+    const nome = req.params.nome;
     try {
-        const user = await usuarios.excluir(id);
+        const user = await usuarios.deletar(nome);
         res.status(200).json({ msg: "Usuário excluido com sucesso" });
     } catch (e) {
         res.status(400).json({ msg: "Usuário não encontrado" });

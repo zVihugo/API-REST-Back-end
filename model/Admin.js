@@ -17,11 +17,15 @@ const atualizar = async(id) => {
   return admin;
 };
 const excluir = async(id) => {
-  const admin = await adminModel.findByIdAndDelete(id);
+  const admin = await adminModel.deleteOne(id);
   return admin;
 };
 const buscar = async(nome) => {
   const admin = await adminModel.findOne({nome: nome});
+  return admin;
+};
+const buscarID = async(id) => {
+  const admin = await adminModel.findById(id);
   return admin;
 };
 const listar = async() => {
@@ -35,4 +39,5 @@ module.exports = {
   atualizar,
   buscar,
   excluir,
+  buscarID
 };

@@ -8,6 +8,13 @@ async function validaId(req, res, next){
     return;
   }
 }
+async function validaNome(req, res, next){
+  const nome  = req.params.nome;
+  if(nome === undefined || nome === null || nome === "") {
+    res.status(400).json({ msg: "Nome não informado!" });
+    return;
+  }
+}
 
 async function validaPost(req, res, next) {
   const { nome, senha, confirmeSenha } = req.body;
@@ -32,19 +39,16 @@ async function validaPost(req, res, next) {
 async function ehAdmin(req, res, next){
   const id = req.params.id;
   try {
-    const user = await AdminModel.findById(id);
-    if(!user) {
-      return res.status(404).json({msg: "Usuário não encontrado!"});
+    const user = await AdminModel.buscarID(id);
+    if(!user || !user.nome.endsWith("admin")) {
+      return res.status(401).json({msg: "Usuário não autorizado!"});
     }
-    if(user.nome.endsWith("admin")){
-      next();
-    } else {
-      res.status(401).json({msg: "Usuário não autorizado!"});
-    }
+    next();
   } catch (error) {
     res.status(500).json({msg: "Erro ao buscar usuário!"});
   }
 }
+
 
 async function usuarioOuAdmin(req, res, next){
   try {
@@ -72,5 +76,6 @@ module.exports = {
   validaId: validaId,
   validaPost: validaPost,
   isAdmin:  ehAdmin,
-  usuarioOuAdmin: usuarioOuAdmin
+  usuarioOuAdmin: usuarioOuAdmin,
+  validaNome: validaNome
 };

@@ -16,8 +16,8 @@ const atualizar = async(id) => {
     const user = await userModel.findByIdAndUpdate(id);
     return user;
 };
-const deletar = async(id) => {
-    const user = await userModel.findByIdAndDelete(id);
+const deletar = async(nome) => {
+    const user = await userModel.deleteOne({nome: nome});
     return user;
 };
 const buscar = async(nome) => {
@@ -28,11 +28,16 @@ const listar = async() => {
     const user = await userModel.find();
     return user;
 };
+const buscarID   = async(id) => {
+    const user = await userModel.findById(id);
+    return user;
+};
 
 module.exports = {
     salvar,
     atualizar,
     deletar,
     buscar,
-    listar
+    listar,
+    buscarID
 };

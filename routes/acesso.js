@@ -25,7 +25,7 @@ router.post("/registrar", validaPost, async(req, res) => {
 
     try {
         let user;
-        if (nome.endsWith(admin)) {
+        if (nome.endsWith(ADMIN)) {
             user = await admins.salvar(nome, senha);
             res.status(201).json({ msg: "Administrador criado com sucesso",user: user });
         } else {

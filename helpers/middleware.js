@@ -36,12 +36,10 @@ async function validaPost(req, res, next) {
   const { nome, senha, confirmeSenha } = req.body;
 
   if (!nome) {
-    console.log("AQUI PEGA BCT")
     res.status(400).json({ msg: "O nome é obrigatório!" });
     return;
   }
   if (!senha) {
-    console.log("BOSTA DE ERRO DE MEDAAAAAA")
     res.status(400).json({ msg: "A senha é obrigatória!" });
     return;
   }

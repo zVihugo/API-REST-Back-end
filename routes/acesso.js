@@ -80,7 +80,7 @@ router.get("/visualizar/:id", isAuth, (req, res) =>{
     res.status(200).json({msg: "Teste para ver se o isAuth está funcionando"});
 })
 
-//Rota exclusão usuario por admin
+//Rota exclusão usuario por admin- OK
 router.delete("/excluir/:id", validaId, usuarioOuAdmin, async(req, res) => {
     const id = req.params.id
     try {
@@ -91,10 +91,7 @@ router.delete("/excluir/:id", validaId, usuarioOuAdmin, async(req, res) => {
     }
 });
 
-//Rota alterar dados pessoas
-// Identificar o usuário da requisição
-// Verificar se o usuário da requisição é o mesmo que está sendo alterado
-// Se não for o mesmo, verificar se é admin
+//Rota alterar dados pessoas - ROTA OK
 router.put('/alterar/:id', validaId, isAuth, async (req, res) => {
     const token = req.header('Authorization').replace('Bearer ', '');
     const decoded = jwt.verify(token, process.env.SECRET);

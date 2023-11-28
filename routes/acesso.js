@@ -2,7 +2,6 @@
 const express = require("express");
 const router = express.Router();
 const usuarios = require("../model/Usuarios");
-const utils = require("../helpers/utils");
 const admins = require("../model/Admin");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");

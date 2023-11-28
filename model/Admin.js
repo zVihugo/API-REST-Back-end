@@ -17,7 +17,7 @@ const atualizar = async(id) => {
   return admin;
 };
 const excluir = async(id) => {
-  const admin = await adminModel.deleteOne(id);
+  const admin = await adminModel.findByIdAndDelete({_id: id});
   return admin;
 };
 const buscar = async(nome) => {

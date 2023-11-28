@@ -12,12 +12,12 @@ const salvar = async (nome, senha) => {
     return user;
 };
 
-const atualizar = async(id) => {
-    const user = await userModel.findByIdAndUpdate(id);
+const atualizar = async(id, nome) => {
+    const user = await userModel.findByIdAndUpdate(id, {nome: nome});
     return user;
 };
-const deletar = async(nome) => {
-    const user = await userModel.deleteOne({nome: nome});
+const excluir = async(id) => {
+    const user = await userModel.findByIdAndDelete({_id: id});
     return user;
 };
 const buscar = async(nome) => {
@@ -36,7 +36,7 @@ const buscarID   = async(id) => {
 module.exports = {
     salvar,
     atualizar,
-    deletar,
+    excluir,
     buscar,
     listar,
     buscarID

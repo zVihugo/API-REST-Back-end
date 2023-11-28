@@ -24,11 +24,12 @@ async function validaId(req, res, next){
   next();
 }
 async function validaNome(req, res, next){
-  const nome  = req.params.nome;
+  const nome = req.body.nome;
   if(nome === undefined || nome === null || nome === "") {
     res.status(400).json({ msg: "Nome não informado!" });
     return;
   }
+  next()
 }
 
 async function validaPost(req, res, next) {
@@ -51,26 +52,14 @@ async function validaPost(req, res, next) {
   next();
 }
 
-async function isAdmin(req, res, next){
-  const id = req.params.id;
-  try {
-    const user = await AdminModel.buscarID(id);
-    if(!user || !user.nome.endsWith("admin")) {
-      return res.status(401).json({msg: "Usuário não autorizado!"});
-    }
-    next();
-  } catch (error) {
-    res.status(500).json({msg: "Erro ao buscar usuário!"});
-  }
-}
-
-
 async function usuarioOuAdmin(req, res, next){
   try {
     const token = req.header('Authorization').replace('Bearer ', '');
     const decoded = jwt.verify(token, process.env.SECRET);
-    const user = await userModel.buscarID(decoded._id);
-    const admin = await AdminModel.buscarID(decoded._id);
+    console.log("token", decoded)
+    const user = await userModel.buscarID(decoded.id);
+    console.log("user", user)
+    const admin = await AdminModel.buscarID(decoded.id);
 
     if (!user && !admin) {
       throw new Error();
@@ -88,13 +77,10 @@ async function usuarioOuAdmin(req, res, next){
   }
 }
 
-
-
 module.exports = {
   isAuth: isAuth,
   validaId: validaId,
   validaPost: validaPost,
-  isAdmin:  isAdmin,
   usuarioOuAdmin: usuarioOuAdmin,
   validaNome: validaNome
 };

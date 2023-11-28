@@ -7,7 +7,7 @@ const admins = require("../model/Admin");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 
-const {validaNome, validaId, validaPost, isAdmin, usuarioOuAdmin, isAuth} = require("../helpers/middleware");
+const {validaNome, validaId, validaPost, usuarioOuAdmin, isAuth} = require("../helpers/middleware");
 
 //configuração do dotenv
 dotenv.config();
@@ -20,8 +20,8 @@ router.get("/", (req, res) => {
     res.json({ msg: "Bem vindo a rota de acesso" });
 });
 
-//rota para o registro
-router.post("/registrar", validaPost, async(req, res) => {
+//rota para o registro - ROTA OK
+router.post("/registrar", validaPost, validaNome, async(req, res) => {
     const { nome, senha, confirmeSenha } = req.body;
 
     try {
@@ -40,9 +40,8 @@ router.post("/registrar", validaPost, async(req, res) => {
     }
 })
 
-//Rota para login
-
-router.post("/login", async(req, res)=>{
+//Rota para login - ROTA OK
+router.post("/login", validaNome, async(req, res)=>{
     const {nome, senha} = req.body;
 
     try{
@@ -63,9 +62,8 @@ router.post("/login", async(req, res)=>{
     }
 })
 
-//Rota admin cria admin
-router.post("/admin/:id", validaPost, isAdmin, async(req, res) => {
-    const id = req.params.id;
+//Rota admin cria admin - ROTA OK
+router.post("/admin", validaPost, usuarioOuAdmin, async(req, res) => {
     const { nome, senha, confirmeSenha } = req.body;
 
     try {
@@ -78,98 +76,52 @@ router.post("/admin/:id", validaPost, isAdmin, async(req, res) => {
     }
 });
 
-router.get("/visualizar", isAuth, (req, res) =>{
-    res.status(200).json({msg: "Teste para ver se o isAuth está funcionando"});
+//Rota criada somente para o teste do middleware isAuth- ROTA OK
+router.get("/visualizar/:id", isAuth, (req, res) =>{
+    res.status(200).json({msg: "Teste para ver se o isAuth está funcionando",
+admin: admin});
 })
 
 //Rota exclusão usuario por admin
-router.delete("/excluir/:nome", validaNome, usuarioOuAdmin, async(req, res) => {
-    const nome = req.params.nome;
+router.delete("/excluir/:id", validaId, usuarioOuAdmin, async(req, res) => {
+    const id = req.params.id
     try {
-        const user = await usuarios.deletar(nome);
+        const user = await usuarios.excluir(id);
         res.status(200).json({ msg: "Usuário excluido com sucesso" });
     } catch (e) {
         res.status(400).json({ msg: "Usuário não encontrado" });
     }
 });
 
-
 //Rota alterar dados pessoas
-
 // Identificar o usuário da requisição
 // Verificar se o usuário da requisição é o mesmo que está sendo alterado
 // Se não for o mesmo, verificar se é admin
-router.put('/users/:id', isAuth, async (req, res) => {
-    const id = req.params.id;
-    const flag = await utils.isAdmin(req.headers.Authorization);
-
-    if (!flag) {
-        return res.status(401).json({ msg: "Usuário não encontrado" });
-    }
-
-    if (flag.userId !== id && !flag.isAdmin) {
-        return res.status(401).json({ msg: "Usuário comum não autorizado a alterar dados de outros usuários" });
-    }
-
-
-    try {
-        let user;
-        if(id.endsWith(ADMIN)){
-            user = await admins.buscarPorId(id);
-        }else{
-            user = await usuarios.buscarPorId(id);
+router.put('/alterar/:id', validaId, isAuth, async (req, res) => {
+    const token = req.header('Authorization').replace('Bearer ', '');
+    const decoded = jwt.verify(token, process.env.SECRET);
+    const user = await usuarios.buscarID(decoded.id);
+    const admin = await admins.buscarID(decoded.id);
+    const nome = req.body.nome;
+    if(user){
+        if(user._id.toString() !== req.params.id){
+            res.status(401).json({msg: "Usuário comum não autorizado a alterar dados de outros usuários"});
         }
-
-        if (!user) {
-            return res.status(404).json({ msg: "Usuário não encontrado" });
+        else if(user._id.toString() === req.params.id){
+            try {
+                const user = await usuarios.atualizar(req.params.id, nome);
+                res.status(200).json({ msg: "Você se alterou com sucesso!", user: user });
+            } catch (e) {
+                res.status(500).json({ msg: "Aconteceu um erro no servidor." });
+            }
         }
-
-        if(updates.nome && updates.nome.endsWith(ADMIN)){
-            return res.status(400).json({ msg: "Não é permitido alterar um usuário para administrador" });
+    }else if(admin){
+        try {
+            const user = await usuarios.atualizar(req.params.id, nome);
+            res.status(200).json({ msg: "Usuário atualizado com sucesso", user: user });
+        } catch (e) {
+            res.status(500).json({ msg: "Aconteceu um erro no servidor." });
         }
-
-        if(updates.nome){
-            user.nome = updates.nome;
-        }
-        if(updates.senha){
-            user.senha = updates.senha;
-        }
-
-        if(id.endsWith(ADMIN)){
-            await admins.atualizar(id, user);
-        }else{
-            await usuarios.atualizar(id, user);
-        }
-
-        res.status(200).json({ msg: "Usuário atualizado com sucesso", user: user });
-    } catch (e) {
-        res.status(500).json({ msg: "Aconteceu um erro no servidor." });
     }
 });
-
-// Rota para buscar um ID
-router.get("/buscar/:id", validaId, async(req, res) => {
-    const id = req.params.id;
-
-
-
-
-    try {
-        let user = await usuarios.buscarID(id);
-
-        if (!user) {
-            user = await admins.buscarID(id);
-        }
-
-        if (!user) {
-            return res.status(404).json({ msg: "Usuário não encontrado" });
-        }
-
-        res.status(200).json(user);
-    } catch (e) {
-        console.log(e);
-        res.status(500).json({ msg: "Erro ao buscar usuário", error: e });
-    }
-});
-
 module.exports = router;

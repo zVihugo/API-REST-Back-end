@@ -20,4 +20,28 @@ async function isAdmin(token) {
     return null;
 }
 
+async function verificarUsuario(req, res, next) {
+    try {
+        const token = req.header('Authorization').replace('Bearer ', '');
+        const decoded = jwt.verify(token, process.env.SECRET);
+        console.log("token", decoded)
+        const user = await userModel.buscarID(decoded.id);
+        const admin = await AdminModel.buscarID(decoded.id);
+    
+        if (!user && !admin) {
+          throw new Error();
+        }
+    
+        if (!admin && user._id.toString() !== req.params.id) {
+          return res.status(403).send({ error: 'Acesso negado.' });
+        }
+    
+        req.token = token;
+        req.user = user || admin;
+        next();
+      } catch (e) {
+        res.status(401).send({ error: 'Por favor, autentique.' });
+      }
+}
+
 module.exports = {isAdmin: isAdmin}

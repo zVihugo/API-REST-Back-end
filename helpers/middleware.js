@@ -1,12 +1,27 @@
 const AdminModel = require("../model/Admin");
 const userModel = require("../model/Usuarios");
+const jwt = require("jsonwebtoken");
+
+async function isAuth(req, res, next ) {
+  const token = req.header('Authorization').replace('Bearer ', '');
+  const decoded = jwt.verify(token, process.env.SECRET);
+
+  if (!decoded) {
+    return res.status(401).json({msg: "Usuário não authenticado!"});
+  }
+
+  next();
+}
 
 async function validaId(req, res, next){
   const id = req.params.id;
+  
   if(id === undefined || id === null || id === "") {
     res.status(400).json({ msg: "ID não informado!" });
     return;
   }
+
+  next();
 }
 async function validaNome(req, res, next){
   const nome  = req.params.nome;
@@ -36,7 +51,7 @@ async function validaPost(req, res, next) {
   next();
 }
 
-async function ehAdmin(req, res, next){
+async function isAdmin(req, res, next){
   const id = req.params.id;
   try {
     const user = await AdminModel.buscarID(id);
@@ -53,9 +68,9 @@ async function ehAdmin(req, res, next){
 async function usuarioOuAdmin(req, res, next){
   try {
     const token = req.header('Authorization').replace('Bearer ', '');
-    const decoded = jwt.verify(token, 'your_jwt_secret');
-    const user = await userModel.findById(decoded._id);
-    const admin = await AdminModel.findById(decoded._id);
+    const decoded = jwt.verify(token, process.env.SECRET);
+    const user = await userModel.buscarID(decoded._id);
+    const admin = await AdminModel.buscarID(decoded._id);
 
     if (!user && !admin) {
       throw new Error();
@@ -72,10 +87,14 @@ async function usuarioOuAdmin(req, res, next){
     res.status(401).send({ error: 'Por favor, autentique.' });
   }
 }
+
+
+
 module.exports = {
+  isAuth: isAuth,
   validaId: validaId,
   validaPost: validaPost,
-  isAdmin:  ehAdmin,
+  isAdmin:  isAdmin,
   usuarioOuAdmin: usuarioOuAdmin,
   validaNome: validaNome
 };

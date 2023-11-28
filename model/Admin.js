@@ -25,7 +25,7 @@ const buscar = async(nome) => {
   return admin;
 };
 const buscarID = async(id) => {
-  const admin = await adminModel.findById(id);
+  const admin = await adminModel.findById({_id: id});
   return admin;
 };
 const listar = async() => {

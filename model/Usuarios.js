@@ -29,7 +29,7 @@ const listar = async() => {
     return user;
 };
 const buscarID   = async(id) => {
-    const user = await userModel.findById(id);
+    const user = await userModel.findById({_id: id});
     return user;
 };
 

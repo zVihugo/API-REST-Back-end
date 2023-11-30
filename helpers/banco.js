@@ -8,7 +8,7 @@ const password = process.env.DB_PASS2;
 
 mongoose
   .connect(
-    `mongodb+srv://${username}:${password}@testando.nqqs4dr.mongodb.net/`
+    `mongodb+srv://${username}:${password}@api.vxosfmf.mongodb.net/`
   )
   .then(() => {
     console.log("Conectado ao banco de dados");

@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const token = require("../helpers/middleware");
-const {salvarPadaria, salvarProduto, atualizarPadaria, atualizarProduto, deletarPadaria, deletarProduto, buscarPadaria, buscarProduto, listarPadaria, listarProduto} = require("../model/Padaria");
-const validar = require("../helpers/opValid");
+const {salvarPadaria, salvarProduto, atualizarPadaria, atualizarProduto, deletarPadaria, deletarProduto,  listarPadaria, listarProduto, buscarpID, buscarID, padariaModel,  produtoModel} = require("../model/Padaria");
+const validar = require("../helpers/opValid"); 
 
 //Rota principal - ROTA OK
 router.get("/", (req, res) => {
@@ -44,8 +44,30 @@ router.post("/criarProduto", token.isAuth, validar.dadosProduto, async(req, res)
     }
 })
 
-//Rota para a atualizar padaria - ROTA OK
+//Rota para buscar uma padaria - ROTA OK
+router.get("/buscarPadaria/:id", token.isAuth, validar.validaID, async(req, res)=>{
+    const id = req.params.id;
+    try{
+        const padaria = await buscarID(id);
+        res.status(200).json({msg: "Padaria encontrada", padaria: padaria});
+    }catch(e){
+        res.status(500).json({msg: "Ocorreu um erro"})
+    }
+})
 
+//Rota para buscar um produto - ROTA OK
+router.get("/buscarProduto/:id", token.isAuth,  validar.validaID, async(req, res)=>{
+    const id = req.params.id
+    try{
+        const produto = await buscarpID(id);
+        console.log("Produto ", produto)
+        res.status(200).json({msg: "Produto encontrado", produto: produto});
+    }catch(e){
+        res.status(500).json({msg: "Ocorreu um erro"})
+    }
+})
+
+//Rota para a atualizar padaria - ROTA OK
 router.put("/atualizarPadaria/:id", token.isAuth, validar.atualizarPadaria, async(req, res)=>{
     const nome = req.body.nome; //Por algum motivo, quando eu coloquei o .nome ele funcionou
     const id = req.params.id;
@@ -70,4 +92,42 @@ router.put("/atualizarProduto/:id", token.isAuth, validar.atualizarProduto, asyn
     }
 });
 
+//Rota para deleter uma padaria  - ROTA OK
+router.delete("/deletarPadaria/:id", token.isAuth, validar.validaID,async(req, res)=>{
+    const id = req. params.id
+    try{
+        const padaria = await deletarPadaria(id);
+        res.status(200).json({msg: "Padaria excluida com sucesso", padaria: padaria});
+    }catch(e){
+        res.status(500).json({msg: "Ocorreu um erro!!!"})
+    }
+})
+
+//Rota para deletar um produto - ROTA OK
+router.delete("/deletarProduto/:id", token.isAuth, validar.validaID, async(req, res)=>{
+    const id = req.params.id;
+    try{
+        const produto = await deletarProduto(id);
+        res.status(200).json({msg: "Produto excluido com sucesso", produto: produto});
+    }catch(e){
+        res.status(500).json({msg: "Ocorreu um erro!!!"})
+    }
+})
+
+//Rota lógica de negócios - ROTA OK
+router.get("/produtoCaro/:preco", async (req, res) => {
+    try {
+        const preco = parseInt(req.params.preco);
+        console.log("tipo" , typeof preco)
+        const produtosCaros = await produtoModel.find({ preco: { $gt: preco } });
+        const padariaIds = produtosCaros.map(produto => produto.owner);
+        const padarias = await padariaModel.find({ _id: { $in: padariaIds } });
+        res.status(200).json({ msg: "Padarias com produto caro", padarias: padarias });
+    } catch (e) {
+        res.status(500).json({ msg: "Ocorreu um erro" });
+    }
+});
+//Rota para  a paginação dos dados (Lembrar de usar query params) VERIFICAR COM O PROFESSOR
+router.get("/listarProdutos", validar.listarProdutos)
+router.get("/listarPadarias", validar.listarPadaria)
 module.exports = router;

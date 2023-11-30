@@ -4,6 +4,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 const acessoRouter = require("./routes/acesso");
 const opRouter = require("./routes/operacoes");
+const install = require("./routes/install")
 
 var app = express();
 
@@ -14,6 +15,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", acessoRouter);
 app.use("/principal", opRouter);
+app.use("/install", install);
 
 app.get("/teste", (req, res) => {
   res.status(200).json({ msg: "Bem vindo a API!" });

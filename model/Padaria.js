@@ -62,6 +62,7 @@ const buscarID = async(id) => {
 };
 const buscarProduto = async(nome) => {
     const produto = await produtoModel.findOne({nome: nome});
+    console.log("La na funcao", produto)
     return produto;
 };
 const listarPadaria = async() => {
@@ -86,5 +87,7 @@ module.exports = {
     listarProduto,
     buscarID,
     buscarpID,
-    buscarProdutoNaPadaria
+    buscarProdutoNaPadaria,
+    padariaModel,
+    produtoModel
 };

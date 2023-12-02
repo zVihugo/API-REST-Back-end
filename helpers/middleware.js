@@ -3,16 +3,36 @@ const userModel = require("../model/Usuarios");
 const jwt = require("jsonwebtoken");
 
 async function isAuth(req, res, next ) {
-  const token = req.header('Authorization').replace('Bearer ', '');
-  const decoded = jwt.verify(token, process.env.SECRET);
+  
+  try {
+    const token = req.header('Authorization');
 
-  if (!decoded) {
-    return res.status(401).json({msg: "Usuário não authenticado!"});
+    if(!token) {
+      return res.status(401).send({msg:'O token não foi inserido.'});
+    }
+    
+    const tokenComBearer = token.replace('Bearer ', '');
+
+    if(!tokenComBearer) {
+      return res.status(401).send({ msg:'O token não foi inserido corretamente'});
+    }
+
+    const decoded = jwt.verify(tokenComBearer, process.env.SECRET);
+
+    if(decoded) {
+      next();
+    } else if (!decoded) {
+      return res.status(401).json({msg: "Usuário não authenticado!"});
+    }
+  } catch (e) {
+      if(jwt.TokenExpiredError) {
+        return res.status(403).send({msg: "Token expirado ou inválido!"});
+      }
+      else {
+        res.status(500).json({msg: "Erro no servidor!"});
+      }
   }
-
-  next();
 }
-
 async function validaId(req, res, next){
   const id = req.params.id;
   
@@ -43,7 +63,11 @@ async function validaPost(req, res, next) {
     res.status(400).json({ msg: "A senha é obrigatória!" });
     return;
   }
-  if(senha !== confirmeSenha){
+  if(!confirmeSenha) {
+    res.status(400).json({ msg: "Confirmação de Senha é obrigatória!" });
+    return;
+  }
+  if (senha !== confirmeSenha){
     res.status(400).json({ msg: "As senhas não são iguais!" });
     return;
   }

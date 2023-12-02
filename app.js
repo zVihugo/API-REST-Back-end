@@ -4,7 +4,9 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 const acessoRouter = require("./routes/acesso");
 const opRouter = require("./routes/operacoes");
-const install = require("./routes/install")
+const install = require("./routes/install");
+const swaggerFile = require('./doc_swagger.json');
+const swaggerUI = require('swagger-ui-express');
 
 var app = express();
 
@@ -16,6 +18,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", acessoRouter);
 app.use("/principal", opRouter);
 app.use("/install", install);
+
+app.use('/api-doc', swaggerUI.serve, swaggerUI.setup(swaggerFile));
 
 app.get("/teste", (req, res) => {
   res.status(200).json({ msg: "Bem vindo a API!" });

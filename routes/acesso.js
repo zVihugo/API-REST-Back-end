@@ -77,7 +77,11 @@ router.post("/admin", validaPost, usuarioOuAdmin, async(req, res) => {
 
 //Rota criada somente para o teste do middleware isAuth- ROTA OK
 router.get("/visualizar/:id", isAuth, (req, res) =>{
-    res.status(200).json({msg: "Teste para ver se o isAuth está funcionando"});
+    try {
+      res.status(200).json({msg: "Teste para ver se o isAuth está funcionando"});  
+    } catch (e) {
+        res.status(403).json({msg: "Acesso negado!"});
+    }
 })
 
 //Rota exclusão usuario por admin- OK

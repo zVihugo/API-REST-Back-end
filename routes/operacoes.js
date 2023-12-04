@@ -139,6 +139,10 @@ router.get("/listarPadarias", async(req, res) => {
     const limite = parseInt(req.query.limite) || 5;
     const pagina = parseInt(req.query.pagina) || 1;
 
+    if(![5, 10, 30].includes(limite)) {
+      return res.status(400).json({ msg: 'O limite deve ser 5, 10 ou 30.' });
+    }
+
     const contador = (pagina - 1) * limite;
     const padarias = await paginarPadaria(limite, contador);
 
@@ -154,6 +158,10 @@ router.get("/listarProdutos", async(req, res) => {
   try {
     const limite = parseInt(req.query.limite) || 5;  
     const pagina = parseInt(req.query.pagina) || 1; 
+
+    if(![5, 10, 30].includes(limite)) {
+      return res.status(400).json({ msg: 'O limite deve ser 5, 10 ou 30.' });
+    }
 
     const contador = (pagina - 1) * limite;
     const produtos = await paginarProduto(limite, contador);

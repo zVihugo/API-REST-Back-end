@@ -19,7 +19,7 @@ app.use("/", acessoRouter);
 app.use("/principal", opRouter);
 app.use("/install", install);
 
-app.use('/api-doc', swaggerUI.serve, swaggerUI.setup(swaggerFile));
+app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerFile));
 
 app.get("/teste", (req, res) => {
   res.status(200).json({ msg: "Bem vindo a API!" });

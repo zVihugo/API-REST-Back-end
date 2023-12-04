@@ -26,7 +26,7 @@ async function dadosProduto(req, res, next){
             if(produto){
                 res.status(400).json({msg: "Produto já cadastrado nesta padaria"});
                 return;
-            } 
+            }   
         }else{
             res.status(400).json({msg: "Padaria não encontrada"});
             return;
@@ -91,49 +91,10 @@ async function validaID(req, res, next){
     }
 }
 
-async function listarProdutos(req, res, next){
-    const limite = parseInt(req.query.limite);
-    const pagina = parseInt(req.query.pagina);
-
-    if(![5, 10, 30].includes(limite)) {
-        return res.status(400).json({ msg: 'O limite deve ser 5, 10 ou 30.' });
-    }
-
-    try {
-        const produtos = await padariaModel.listarProduto()
-            .skip((pagina - 1) * limite)
-            .limit(limite);
-        res.status(200).json({ produtos });
-    } catch (e) {
-        res.status(500).json({ msg: 'Ocorreu um erro.' });
-    }
-}
-
-async function listarPadaria(req, res, next){
-    const limite = parseInt(req.query.limite);
-    const pagina = parseInt(req.query.pagina);
-
-    if(![5, 10, 30].includes(limite)) {
-        return res.status(400).json({ msg: 'O limite deve ser 5, 10 ou 30.' });
-    }
-
-    try {
-        const padarias = await padariaModel.listarPadaria()
-            .skip((pagina - 1) * limite)
-            .limit(limite)
-            .exec();
-        res.status(200).json({ padarias });
-    } catch (e) {
-        res.status(500).json({ msg: 'Ocorreu um erro.' });
-    }
-}
-
 module.exports = {
     dadosPadaria,
     dadosProduto,
     atualizarPadaria,
     atualizarProduto,
     validaID,
-    listarProdutos,
-    listarPadaria
 }

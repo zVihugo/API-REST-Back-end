@@ -27,8 +27,7 @@ async function isAuth(req, res, next ) {
   } catch (e) {
       if(jwt.TokenExpiredError) {
         return res.status(403).send({msg: "Token expirado ou inválido!"});
-      }
-      else {
+      } else {
         res.status(500).json({msg: "Erro no servidor!"});
       }
   }
@@ -49,7 +48,7 @@ async function validaNome(req, res, next){
     res.status(400).json({ msg: "Nome não informado!" });
     return;
   }
-  next()
+  next();
 }
 
 async function validaPost(req, res, next) {

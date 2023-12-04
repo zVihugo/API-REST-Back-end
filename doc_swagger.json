@@ -2,10 +2,10 @@
   "swagger": "2.0",
   "info": {
     "version": "1.0.0",
-    "title": "REST API",
-    "description": ""
+    "title": "API REST - Gerenciadora de padarias",
+    "description": "A API REST desenvolvida é uma solução abrangente que oferece operações CRUD (Create, Read, Update, Delete) para gerenciar usuários, administradores, padarias e produtos. Projetada para ser robusta e escalável, a API proporciona uma estrutura eficiente para manipular dados relacionados a diferentes entidades em um ambiente de gerenciamento de padarias."
   },
-  "host": "localhost:3000",
+  "host": "localhost:3500",
   "basePath": "/",
   "schemes": [
     "http"
@@ -13,27 +13,27 @@
   "paths": {
     "/teste": {
       "get": {
-        "description": "",
+        "description": "Rota construída apenas para teste incial da API.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Retorna uma mensagem de boas vindas a API."
           }
         }
       }
     },
     "/": {
       "get": {
-        "description": "",
+        "description": "Rota principal de acesso.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Retorna uma mensagem de boas vindas a rota de acesso."
           }
         }
       }
     },
     "/registrar": {
       "post": {
-        "description": "",
+        "description": "Rota POST para registrar usuário ou administrador.",
         "parameters": [
           {
             "name": "body",
@@ -42,13 +42,13 @@
               "type": "object",
               "properties": {
                 "nome": {
-                  "example": "any"
+                  "example": "Se registrar administrador: 'Joao@admin'. Se registrar usuário: 'Joao da Silva'. "
                 },
                 "senha": {
-                  "example": "any"
+                  "example": "abc123"
                 },
                 "confirmeSenha": {
-                  "example": "any"
+                  "example": "abc123"
                 }
               }
             }
@@ -56,20 +56,20 @@
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Administrador ou Usuário criado com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Nome não informado."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }
     },
     "/login": {
       "post": {
-        "description": "",
+        "description": "Rota POST para efetuar o login do Usuário ou Administrador registrados.",
         "parameters": [
           {
             "name": "body",
@@ -78,10 +78,10 @@
               "type": "object",
               "properties": {
                 "nome": {
-                  "example": "any"
+                  "example": "Se administrador, inserir o nome registrado: 'Joao@admin'. Se usuário, inserir o nome registrado: 'Joao da Silva'."
                 },
                 "senha": {
-                  "example": "any"
+                  "example": "abc123"
                 }
               }
             }
@@ -89,17 +89,17 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Login realizado com sucesso. Usuário e Administrador recebem o Token jwt."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Usuário não encontrado."
           }
         }
       }
     },
     "/admin": {
       "post": {
-        "description": "",
+        "description": "Rota para validar usuário ou administrador com a autenticação do Token recebido no Login.",
         "parameters": [
           {
             "name": "Authorization",
@@ -113,13 +113,13 @@
               "type": "object",
               "properties": {
                 "nome": {
-                  "example": "any"
+                  "example": "Se nome for: 'Joao@admin', Adminstrador será criado, se não, o acesso será negado."
                 },
                 "senha": {
-                  "example": "any"
+                  "example": "abc123"
                 },
                 "confirmeSenha": {
-                  "example": "any"
+                  "example": "abc123"
                 }
               }
             }
@@ -127,29 +127,29 @@
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Administrador criado com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Nome, senha e confirme senha inválidos."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Autenticação necessária."
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Acesso negado."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }
     },
     "/visualizar/{id}": {
       "get": {
-        "description": "",
+        "description": "Rota para visualizar se isAuth está de funcionando. Necessita do ID e do token para verificar.",
         "parameters": [
           {
-            "name": "id",
+            "name": "ID gerado pelo banco de dados.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -162,26 +162,26 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Teste OK"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Token inválido ou não inserido corretamente."
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Acesso negado."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }
     },
     "/excluir/{id}": {
       "delete": {
-        "description": "",
+        "description": "Rota para excluir usuários e administradores.",
         "parameters": [
           {
-            "name": "id",
+            "name": "ID gerado pelo banco de dados.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -194,26 +194,26 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Usuário ou Adminstrador excluído com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Registros excluídos ou não encontrados."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Autenticação necessária."
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Acesso negado."
           }
         }
       }
     },
     "/alterar/{id}": {
       "put": {
-        "description": "",
+        "description": "Rota para alterar os dados.",
         "parameters": [
           {
-            "name": "id",
+            "name": "ID gerado pelo banco de dados.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -230,7 +230,7 @@
               "type": "object",
               "properties": {
                 "nome": {
-                  "example": "any"
+                  "example": "Alterar nome: 'Joao Paulo da Silva'."
                 }
               }
             }
@@ -238,49 +238,49 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Alterado com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "ID não informado."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Token incorreto."
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Token expirado ou inválido."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }
     },
     "/principal/": {
       "get": {
-        "description": "",
+        "description": "Rota principal de acesso ao operador de padaria e produto.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Retorna uma mensagem de boas vindas."
           }
         }
       }
     },
     "/principal/verTodos": {
       "get": {
-        "description": "",
+        "description": "Rota de listagem de todos as padarias e produtos cadastrados.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Retorna padarias e produtos inseridos no banco de dados."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }
     },
     "/principal/criarPadaria": {
       "post": {
-        "description": "",
+        "description": "Rota de criar padaria.",
         "parameters": [
           {
             "name": "Authorization",
@@ -294,7 +294,7 @@
               "type": "object",
               "properties": {
                 "nome": {
-                  "example": "any"
+                  "example": "Padaria do Joao"
                 }
               }
             }
@@ -302,26 +302,26 @@
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Padaria criada com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Padaria já cadastrada ou não informada."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Token inválido ou não inserido corretamente."
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Token expirado ou inválido."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }
     },
     "/principal/criarProduto": {
       "post": {
-        "description": "",
+        "description": "Rota para criar produtos.",
         "parameters": [
           {
             "name": "Authorization",
@@ -335,13 +335,13 @@
               "type": "object",
               "properties": {
                 "nome": {
-                  "example": "any"
+                  "example": "Produto A"
                 },
                 "preco": {
-                  "example": "any"
+                  "example": "10"
                 },
                 "padariaNome": {
-                  "example": "any"
+                  "example": "Padaria do Joao"
                 }
               }
             }
@@ -349,29 +349,29 @@
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Produto criado com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Produto não encontrado ou não inserido ou incorreto."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Token inválido ou não inserido corretamente."
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Token expirado ou inválido."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }
     },
     "/principal/buscarPadaria/{id}": {
       "get": {
-        "description": "",
+        "description": "Rota para visualizar Padaria cadastrada.",
         "parameters": [
           {
-            "name": "id",
+            "name": "ID gerado pelo banco de dados.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -384,26 +384,26 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Padaria encontrada."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Token inválido ou não inserido corretamente."
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Token expirado ou inválido."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }
     },
     "/principal/buscarProduto/{id}": {
       "get": {
-        "description": "",
+        "description": "Rota para visualizar Produto cadastrado na Padaria.",
         "parameters": [
           {
-            "name": "id",
+            "name": "ID gerado pelo banco de dados.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -416,26 +416,26 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Produto encontrado."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Token inválido ou não inserido corretamente."
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Token expirado ou inválido."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }
     },
     "/principal/atualizarPadaria/{id}": {
       "put": {
-        "description": "",
+        "description": "Rota para atualizar nome da Padaria.",
         "parameters": [
           {
-            "name": "id",
+            "name": "ID gerado pelo banco de dados.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -452,7 +452,7 @@
               "type": "object",
               "properties": {
                 "nome": {
-                  "example": "any"
+                  "example": "Padaria do Joaozinho"
                 }
               }
             }
@@ -460,29 +460,29 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Alterado com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Padaria não encontrada ou dados inseridos incorretos."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Token inválido ou não inserido corretamente."
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Token expirado ou inválido."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }
     },
     "/principal/atualizarProduto/{id}": {
       "put": {
-        "description": "",
+        "description": "Rota para atualizar nome e preço do produto.",
         "parameters": [
           {
-            "name": "id",
+            "name": "ID gerado pelo banco de dados.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -499,10 +499,10 @@
               "type": "object",
               "properties": {
                 "nome": {
-                  "example": "any"
+                  "example": "Produto A+"
                 },
                 "preco": {
-                  "example": "any"
+                  "example": "30"
                 }
               }
             }
@@ -510,29 +510,29 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Produto atualizado com sucesso."
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Produto não encontrado ou não inserido ou incorreto."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Token inválido ou não inserido corretamente."
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Token expirado ou inválido."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }
     },
     "/principal/deletarPadaria/{id}": {
       "delete": {
-        "description": "",
+        "description": "Rota para deletar padaria.",
         "parameters": [
           {
-            "name": "id",
+            "name": "ID gerado pelo banco de dados.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -545,26 +545,26 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Padaria deletada com sucesso."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Token inválido ou não inserido corretamente."
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Token expirado ou inválido."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }
     },
     "/principal/deletarProduto/{id}": {
       "delete": {
-        "description": "",
+        "description": "Rota para deletar produto.",
         "parameters": [
           {
-            "name": "id",
+            "name": "ID gerado pelo banco de dados.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -577,23 +577,23 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Produto deletado com sucesso."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Token inválido ou não inserido corretamente."
           },
           "403": {
-            "description": "Forbidden"
+            "description": "Token expirado ou inválido."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }
     },
     "/principal/produtoCaro/{preco}": {
       "get": {
-        "description": "",
+        "description": "Rota de regra de negócio para buscar os Produtos cujo preço seja maior que o preço digitado pelo Usuário.",
         "parameters": [
           {
             "name": "preco",
@@ -604,79 +604,73 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Retornará a lista de produtos maiores que 20, por exemplo."
           },
           "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/principal/listarProdutos": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "limite",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "pagina",
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }
     },
     "/principal/listarPadarias": {
       "get": {
-        "description": "",
+        "description": "Rota de Listar as Padarias de forma paginada. OBS: limite e página para busca, devem ser passador por query.",
         "parameters": [
           {
-            "name": "limite",
+            "name": "limite = 5",
             "in": "query",
             "type": "string"
           },
           {
-            "name": "pagina",
+            "name": "pagina = 1",
             "in": "query",
             "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
+            "description": "Retornará a lista padarias de forma paginada."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro ao Listar padarias."
+          }
+        }
+      }
+    },
+    "/principal/listarProdutos": {
+      "get": {
+        "description": "Rota de Listar os produtos de forma paginada. OBS: limite e página para busca, devem ser passador por query.",
+        "parameters": [
+          {
+            "name": "limite = 5",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "pagina = 1",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retornará a lista de produtos de forma paginada."
+          },
+          "500": {
+            "description": "Erro ao Listar produtos."
           }
         }
       }
     },
     "/install/": {
       "get": {
-        "description": "",
+        "description": "Rota para inserir os dados automaticamente no banco de dados..",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Banco de dados instalado com sucesso."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro no servidor."
           }
         }
       }

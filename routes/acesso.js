@@ -19,7 +19,7 @@ router.get("/", (req, res) => {
     res.json({ msg: "Bem vindo a rota de acesso" });
 });
 
-//rota para o registro - ROTA OK
+//rota para o registro
 router.post("/registrar", validaPost, validaNome, async(req, res) => {
     const { nome, senha, confirmeSenha } = req.body;
 
@@ -39,7 +39,7 @@ router.post("/registrar", validaPost, validaNome, async(req, res) => {
     }
 })
 
-//Rota para login - ROTA OK
+//Rota para login
 router.post("/login", validaNome, async(req, res)=>{
     const {nome, senha} = req.body;
 
@@ -61,7 +61,7 @@ router.post("/login", validaNome, async(req, res)=>{
     }
 })
 
-//Rota admin cria admin - ROTA OK
+//Rota admin cria admin
 router.post("/admin", validaPost, usuarioOuAdmin, async(req, res) => {
     const { nome, senha, confirmeSenha } = req.body;
 
@@ -75,7 +75,7 @@ router.post("/admin", validaPost, usuarioOuAdmin, async(req, res) => {
     }
 });
 
-//Rota criada somente para o teste do middleware isAuth- ROTA OK
+//Rota criada somente para o teste do middleware isAuth
 router.get("/visualizar/:id", isAuth, (req, res) =>{
     try {
       res.status(200).json({msg: "Teste para ver se o isAuth está funcionando"});  
@@ -84,18 +84,26 @@ router.get("/visualizar/:id", isAuth, (req, res) =>{
     }
 })
 
-//Rota exclusão usuario por admin- OK
+//Rota exclusão usuario por admin
 router.delete("/excluir/:id", validaId, usuarioOuAdmin, async(req, res) => {
     const id = req.params.id
     try {
         const user = await usuarios.excluir(id);
-        res.status(200).json({ msg: "Usuário excluido com sucesso" });
+        const admin = await admins.excluir(id);
+        if(user) {
+            res.status(200).json({ msg: "Usuário excluido com sucesso!" });
+        } else if(admin) {
+            res.status(200).json({ msg: "Administrador excluído com sucesso!"});
+        }
+        if(!user || !admin) {
+            res.status(400).json({msg: "Registros já foram deletados!"});
+        }
     } catch (e) {
-        res.status(400).json({ msg: "Usuário não encontrado" });
+        res.status(400).json({ msg: "Usuário ou Administrador não encontrado!" });
     }
 });
 
-//Rota alterar dados pessoas - ROTA OK
+//Rota alterar dados pessoais 
 router.put('/alterar/:id', validaId, isAuth, async (req, res) => {
     const token = req.header('Authorization').replace('Bearer ', '');
     const decoded = jwt.verify(token, process.env.SECRET);

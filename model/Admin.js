@@ -39,5 +39,6 @@ module.exports = {
   atualizar,
   buscar,
   excluir,
-  buscarID
+  buscarID,
+  adminModel
 };

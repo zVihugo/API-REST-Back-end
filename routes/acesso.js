@@ -123,7 +123,7 @@ router.put('/alterar/:id', validaId, isAuth, async (req, res) => {
         }
     }else if(admin){
         try {
-            const user = await usuarios.atualizar(req.params.id, nome);
+            const user = await admins.atualizar(req.params.id, nome);
             res.status(200).json({ msg: "Usuário atualizado com sucesso", user: user });
         } catch (e) {
             res.status(500).json({ msg: "Aconteceu um erro no servidor." });

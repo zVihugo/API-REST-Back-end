@@ -22,13 +22,13 @@ async function isAuth(req, res, next ) {
     if(decoded) {
       next();
     } else if (!decoded) {
-      return res.status(401).json({msg: "Usuário não authenticado!"});
+      return res.status(401).json({ msg: "Usuário não authenticado!" });
     }
   } catch (e) {
       if(jwt.TokenExpiredError) {
-        return res.status(403).send({msg: "Token expirado ou inválido!"});
+        return res.status(403).send({ msg: "Token expirado ou inválido!" });
       } else {
-        res.status(500).json({msg: "Erro no servidor!"});
+        res.status(500).json({msg: "Erro no servidor!" });
       }
   }
 }

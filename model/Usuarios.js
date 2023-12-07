@@ -13,7 +13,7 @@ const salvar = async (nome, senha) => {
 };
 
 const atualizar = async(id, nome) => {
-    const user = await userModel.findByIdAndUpdate(id, {nome: nome});
+    const user = await userModel.findByIdAndUpdate(id, {nome: nome}, {new: true});
     return user;
 };
 const excluir = async(id) => {

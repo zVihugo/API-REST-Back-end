@@ -12,8 +12,8 @@ const salvar = async (nome, senha) => {
   return admin;
 };
 
-const atualizar = async(id) => {
-  const admin = await adminModel.findByIdAndUpdate(id);
+const atualizar = async(id, nome) => {
+  const admin = await adminModel.findByIdAndUpdate(id, {nome: nome}, {new: true});
   return admin;
 };
 const excluir = async(id) => {

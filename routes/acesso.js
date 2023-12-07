@@ -19,20 +19,20 @@ router.get("/", (req, res) => {
     res.json({ msg: "Bem vindo a rota de acesso" });
 });
 
+
 //rota para o registro
 router.post("/registrar", validaPost, validaNome, async(req, res) => {
     const { nome, senha, confirmeSenha } = req.body;
 
-    try {
-        let user;
-        if (nome.endsWith(ADMIN)) {
-            user = await admins.salvar(nome, senha);
-            res.status(201).json({ msg: "Administrador criado com sucesso",user: user });
-        } else {
-            user = await usuarios.salvar(nome, senha);
-            res.status(201).json({ msg: "Usuário criado com sucesso",user: user });
+    try{
+        if(nome.includes(ADMIN)){
+            res.status(400).json({msg: "Não é possivel continuar com a operação"});
+        }else{
+            let user = await usuarios.salvar(nome, senha);
+            //console.log("teste", user)
+            res.status(200).json({msg: "Usuário criado com sucesso", user, user });
         }
-    } catch (e) {
+    }catch (e) {
         res.status(500).json({
             msg: "Aconteceu um erro no servidor.",
         });
@@ -45,15 +45,14 @@ router.post("/login", validaNome, async(req, res)=>{
 
     try{
         let user;
-        if(nome.endsWith(ADMIN)){
-            user = await admins.buscar(nome);
-        }else{
+        user = await admins.buscar(nome);
+        if(!user){
             user = await usuarios.buscar(nome);
         }
         if(user.senha === senha){
             const token = jwt.sign({id: user._id}, process.env.SECRET, {expiresIn: '12h'});
             res.status(200).json({msg: "Login realizado com sucesso", token: token});
-        }else{
+        } else {
             res.status(400).json({msg: "Senha incorreta"});
         }
     }catch(e){

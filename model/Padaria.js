@@ -29,7 +29,7 @@ const salvarProduto = async (nome, preco, padariaNome) => {
   return produto;
 };
 const atualizarPadaria = async (id, nome) => {
-  const padaria = await padariaModel.findByIdAndUpdate(id, { nome: nome }, {bew: true});
+  const padaria = await padariaModel.findByIdAndUpdate(id, { nome: nome }, {new: true});
   return padaria;
 };
 const atualizarProduto = async (id, nome, preco) => {
